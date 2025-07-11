@@ -12,6 +12,9 @@ export class Brand {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ unique: true })
+  code: string;
+
   @Column()
   name: string;
 
