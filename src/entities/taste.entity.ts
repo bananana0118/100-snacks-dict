@@ -1,11 +1,12 @@
 import {
   Column,
   DeleteDateColumn,
+  Entity,
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Snack } from './snack.entity';
-
+@Entity()
 export class Taste {
   @PrimaryGeneratedColumn()
   id: string;

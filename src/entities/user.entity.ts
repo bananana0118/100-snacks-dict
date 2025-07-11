@@ -2,18 +2,17 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  JoinTable,
-  ManyToMany,
+  Entity,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Comment } from './comment.entity';
-import { Snack } from './snack.entity';
 import { SnackReaction } from './snack-reaction.entity';
 
+@Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   nickname: string;
@@ -21,12 +20,8 @@ export class User {
   @Column()
   profileImg: string;
 
-  @ManyToMany(() => Snack, (snack) => snack.snackReaction)
-  @JoinTable({ name: 'user_liked_snacks' })
-  snackReaction: Snack[];
-
   @OneToMany(() => SnackReaction, (reaction) => reaction.user)
-  reactions: SnackReaction[];
+  snackReactions: SnackReaction[];
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];

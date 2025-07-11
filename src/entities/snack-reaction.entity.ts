@@ -18,7 +18,7 @@ export class SnackReaction {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.reactions, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.snackReactions, { onDelete: 'CASCADE' })
   user: User;
 
   @ManyToOne(() => Snack, (snack) => snack.snackReaction, {

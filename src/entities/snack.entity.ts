@@ -7,6 +7,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Taste } from './taste.entity';
@@ -47,7 +48,7 @@ export class Snack {
   })
   tastes: Taste[];
 
-  @ManyToMany(() => SnackReaction, (snackReaction) => snackReaction.snack)
+  @OneToMany(() => SnackReaction, (snackReaction) => snackReaction.snack)
   snackReaction: SnackReaction[];
 
   @ManyToOne(() => Brand, (brand) => brand.snacks)
