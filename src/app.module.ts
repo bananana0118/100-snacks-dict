@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import dbConfig from './config/db.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SnackModule } from './snack/snack.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forRootAsync({
       useFactory: process.env.NODE_ENV === 'production' ? dbConfig : dbConfig,
     }),
+    SnackModule,
   ],
 
   controllers: [AppController],

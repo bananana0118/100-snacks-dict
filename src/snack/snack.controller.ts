@@ -1,40 +1,51 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
+import { CreateSnackDto } from './dto/createSnack.dto';
+import { SnackService } from './snack.service';
+import { PaginationDTO } from './dto/pagination.dto';
+import { UpdateSnackDto } from './dto/updateSnackDto';
 
 @Controller('snack')
 export class SnackController {
+  constructor(private readonly snackService: SnackService) {}
+
   @Get()
-  findAll() {
-    return 'snack';
+  async findAll(@Query() paginationDTO: PaginationDTO) {
+    return await this.snackService.findAll(paginationDTO);
   }
 
   @Get(':id')
-  fineOne(@Param('id', ParseIntPipe) id: number): number {
-    return id;
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.snackService.findOne(id);
   }
 
   //과자 데이터 생성
   @Post()
-  create(@Body() body): any {
-    return body;
+  async create(@Body() createSnackDto: CreateSnackDto) {
+    return await this.snackService.create(createSnackDto);
   }
 
   //과자 수정
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: any): any {
-    return { id, ...body };
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateSnackDto,
+  ) {
+    await this.snackService.update(id, body);
+    return await this.snackService.findOne(id);
   }
 
-  //과자 삭제
-  @Post(':id')
-  delete(@Param('id', ParseIntPipe) id: number): number {
-    return id;
+  @Delete(':id')
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.snackService.delete(id);
   }
 }

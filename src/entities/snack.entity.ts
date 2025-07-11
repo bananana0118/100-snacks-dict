@@ -13,6 +13,8 @@ import {
 import { Taste } from './taste.entity';
 import { Brand } from './brand.entity';
 import { SnackReaction } from './snack-reaction.entity';
+import { SnackType } from './snack-type.entity';
+import { Store } from './store.entity';
 
 @Entity()
 export class Snack {
@@ -22,8 +24,9 @@ export class Snack {
   @Column()
   name: string;
 
-  @Column()
-  type: string;
+  @ManyToOne(() => SnackType, (snackType) => snackType.snacks)
+  @JoinColumn()
+  snackType: SnackType;
 
   @Column()
   price: number;
@@ -37,7 +40,7 @@ export class Snack {
   @Column()
   capacity: number;
 
-  @Column()
+  @Column({ nullable: true })
   releaseAt: Date;
 
   @ManyToMany(() => Taste, (taste) => taste.snacks, { eager: true })
@@ -47,6 +50,14 @@ export class Snack {
     inverseJoinColumn: { name: 'taste_id', referencedColumnName: 'id' },
   })
   tastes: Taste[];
+
+  @ManyToMany(() => Store, (store) => store.snacks, { eager: true })
+  @JoinTable({
+    name: 'snack_stores',
+    joinColumn: { name: 'snack_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'store_id', referencedColumnName: 'id' },
+  })
+  stores: Store[];
 
   @OneToMany(() => SnackReaction, (snackReaction) => snackReaction.snack)
   snackReaction: SnackReaction[];
