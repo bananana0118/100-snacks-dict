@@ -53,6 +53,7 @@ export class MainSeeder implements Seeder {
       { code: 'TST003', name: '짭짤' },
       { code: 'TST004', name: '매콤' },
       { code: 'TST005', name: '쌉싸름' },
+      { code: 'TST006', name: '느끼함' },
     ]);
 
     console.log('snacks...');
