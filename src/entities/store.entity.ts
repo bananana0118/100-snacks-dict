@@ -9,6 +9,9 @@ export class Store {
   @Column()
   name: string;
 
+  @Column({ unique: true })
+  code: string;
+
   @ManyToMany(() => Snack, (snack) => snack.stores)
   snacks: Snack[];
 }

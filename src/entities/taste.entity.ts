@@ -14,6 +14,9 @@ export class Taste {
   @Column()
   name: string;
 
+  @Column({ unique: true })
+  code: string;
+
   @ManyToMany(() => Snack, (snack) => snack.tastes)
   snacks: Snack[];
 
