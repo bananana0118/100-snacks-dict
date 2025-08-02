@@ -16,9 +16,11 @@ export class SnackService {
   }
 
   async findAll(paginationDTO: PaginationDTO) {
+    const pageSize = paginationDTO.size ?? DEFAULT_PAGE_SIZE;
+    const page = paginationDTO.page ?? 1;
     return await this.snackRepo.find({
-      skip: paginationDTO.skip,
-      take: paginationDTO.limit ?? DEFAULT_PAGE_SIZE,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
   }
 

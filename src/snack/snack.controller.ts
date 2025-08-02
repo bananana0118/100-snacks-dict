@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
   Patch,
@@ -19,6 +20,7 @@ export class SnackController {
   constructor(private readonly snackService: SnackService) {}
 
   @Get()
+  @HttpCode(200)
   async findAll(@Query() paginationDTO: PaginationDTO) {
     return await this.snackService.findAll(paginationDTO);
   }
