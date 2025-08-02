@@ -18,10 +18,9 @@ export class CreateSnackDto {
   //4.초콜릿
   //5.젤리
   //6.캔디 껌
-  @IsInt()
-  @IsPositive()
+  @IsString()
   @IsNotEmpty()
-  type: number;
+  type: string;
 
   @IsInt()
   @IsPositive()
@@ -48,17 +47,17 @@ export class CreateSnackDto {
   //5.쌉싸름
 
   @ArrayNotEmpty()
-  @Type(() => Number)
-  @IsInt({ each: true })
-  tasteIds: number[];
+  @Type(() => String)
+  @IsString({ each: true })
+  tasteCodes: string[];
 
   @IsPositive()
   @IsInt()
-  @Type(() => Number)
-  storeId: number;
+  @Type(() => String)
+  storeCodes: string[];
 
   @IsPositive()
   @IsInt()
-  @Type(() => Number)
-  brandId: number;
+  @Type(() => String)
+  brandCodes: string[];
 }
