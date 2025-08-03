@@ -7,6 +7,7 @@ import { PaginationDTO } from './dto/pagination.dto';
 import { DEFAULT_PAGE_SIZE } from 'src/utils/DEFAULT_PAGE_SIZE';
 import { UpdateSnackDto } from './dto/updateSnackDto';
 import { SnackResponseDto } from './dto/snackResponse.dto';
+
 @Injectable()
 export class SnackService {
   constructor(@InjectRepository(Snack) private snackRepo: Repository<Snack>) {}
