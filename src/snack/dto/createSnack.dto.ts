@@ -45,6 +45,7 @@ export class CreateSnackDto {
   //3.짭짤
   //4.매콤
   //5.쌉싸름
+  //6.느끼함
 
   @ArrayNotEmpty()
   @Type(() => String)
