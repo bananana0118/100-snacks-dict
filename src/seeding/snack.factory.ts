@@ -9,10 +9,9 @@ export const Snackfactory = setSeederFactory(Snack, (faker: Faker) => {
   snack.price = +faker.commerce.price({ min: 1000, max: 10000 });
   snack.kcal = faker.number.int({ min: 100, max: 500 });
   snack.capacity = faker.number.int({ min: 50, max: 500 });
-  snack.snackImg = faker.image.urlLoremFlickr({
-    width: 640,
-    height: 480,
-    category: 'food',
+  snack.snackImg = faker.image.urlPicsumPhotos({
+    width: 900,
+    height: 900,
   });
   return snack;
 });
