@@ -1,8 +1,11 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
   ArrayNotEmpty,
+  IsDate,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsPositive,
   IsString,
 } from 'class-validator';
@@ -20,7 +23,7 @@ export class CreateSnackDto {
   //6.캔디 껌
   @IsString()
   @IsNotEmpty()
-  type: string;
+  snackTypeCode: string;
 
   @IsInt()
   @IsPositive()
@@ -47,18 +50,33 @@ export class CreateSnackDto {
   //5.쌉싸름
   //6.느끼함
 
-  @ArrayNotEmpty()
+  @Transform(({ value }) => {
+    if (value === undefined || value === null || value === '') return undefined; // 선택 필드
+    return Array.isArray(value) ? value.map(String) : [String(value)];
+  })
+  @ArrayMaxSize(4)
+  @ArrayNotEmpty() // 최소 1개
   @Type(() => String)
   @IsString({ each: true })
   tasteCodes: string[];
 
+  @Transform(({ value }) => {
+    if (value === undefined || value === null || value === '') return undefined;
+    return Array.isArray(value) ? value.map(String) : [String(value)];
+  })
   @IsPositive()
+  @IsOptional()
   @IsInt()
   @Type(() => String)
-  storeCodes: string[];
+  storeCodes?: string[];
 
   @IsPositive()
   @IsInt()
   @Type(() => String)
-  brandCodes: string[];
+  brandCode: string;
+
+  @Transform(({ value }) => (value ? new Date(value) : undefined))
+  @IsOptional()
+  @IsDate()
+  releaseAt?: Date;
 }

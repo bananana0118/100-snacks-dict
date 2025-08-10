@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -9,11 +10,14 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateSnackDto } from './dto/createSnack.dto';
 import { SnackService } from './snack.service';
 import { PaginationDTO } from './dto/pagination.dto';
 import { UpdateSnackDto } from './dto/updateSnackDto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('snack')
 export class SnackController {
@@ -32,7 +36,15 @@ export class SnackController {
 
   //과자 데이터 생성
   @Post()
-  async create(@Body() createSnackDto: CreateSnackDto) {
+  @UseInterceptors(FileInterceptor('snackImg'))
+  async create(
+    @UploadedFile() snackImg: Express.Multer.File,
+    @Body() createSnackDto: CreateSnackDto,
+  ) {
+    if (snackImg && !/^image\//.test(snackImg.mimetype)) {
+      throw new BadRequestException('이미지 파일만 업로드 가능합니다.');
+    }
+
     return await this.snackService.create(createSnackDto);
   }
 
