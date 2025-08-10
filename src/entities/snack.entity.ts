@@ -15,6 +15,7 @@ import { Brand } from './brand.entity';
 import { SnackReaction } from './snack-reaction.entity';
 import { SnackType } from './snack-type.entity';
 import { Store } from './store.entity';
+import { IsOptional } from 'class-validator';
 
 @Entity()
 export class Snack {
@@ -32,7 +33,8 @@ export class Snack {
   price: number;
 
   @Column()
-  snackImg: string;
+  @IsOptional()
+  snackImg: string; // 이미지 파일이 없을 수도 있으므로 null 허용
 
   @Column()
   kcal: number;
