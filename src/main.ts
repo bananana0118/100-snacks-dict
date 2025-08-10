@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // 1) 기본값(true)으로 전부 허용
-  app.enableCors();
+  app.enableCors({ origin: true, credentials: true });
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
