@@ -41,11 +41,24 @@ export class SnackController {
     @UploadedFile() snackImg: Express.Multer.File,
     @Body() createSnackDto: CreateSnackDto,
   ) {
-    if (snackImg && !/^image\//.test(snackImg.mimetype)) {
+    console.log('===== 요청 들어옴 =====');
+    console.log('BODY:', createSnackDto);
+    console.log(
+      'FILE:',
+      snackImg?.originalname,
+      snackImg?.mimetype,
+      snackImg?.size,
+    );
+
+    // 파일 필수라면 여기서 검사 (DTO가 아니라 컨트롤러에서!)
+    if (!snackImg) {
+      throw new BadRequestException('이미지 파일(snackImg)은 필수입니다.');
+    }
+    if (!/^image\//.test(snackImg.mimetype)) {
       throw new BadRequestException('이미지 파일만 업로드 가능합니다.');
     }
 
-    return await this.snackService.create(createSnackDto);
+    return await this.snackService.create(createSnackDto, snackImg);
   }
 
   //과자 수정

@@ -40,9 +40,8 @@ export class CreateSnackDto {
   @Type(() => Number)
   capacity: number;
 
-  @IsString()
-  @IsNotEmpty()
-  snackImg: string;
+  @IsOptional()
+  snackImg?: string;
   //1.달콤
   //2.상큼
   //3.짭짤
@@ -64,14 +63,11 @@ export class CreateSnackDto {
     if (value === undefined || value === null || value === '') return undefined;
     return Array.isArray(value) ? value.map(String) : [String(value)];
   })
-  @IsPositive()
   @IsOptional()
-  @IsInt()
   @Type(() => String)
   storeCodes?: string[];
 
-  @IsPositive()
-  @IsInt()
+  @IsNotEmpty()
   @Type(() => String)
   brandCode: string;
 

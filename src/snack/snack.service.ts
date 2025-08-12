@@ -1,6 +1,6 @@
 import { Snack } from 'src/entities/snack.entity';
 import { CreateSnackDto } from './dto/createSnack.dto';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationDTO } from './dto/pagination.dto';
@@ -37,18 +37,22 @@ export class SnackService {
     });
     const brand = await this.brandRepo.findOneByOrFail({ code: dto.brandCode });
     const tastes = dto.tasteCodes?.length
-      ? await this.tasteRepo.findBy({ code: In(dto.tasteCodes) })
+      ? await this.tasteRepo.findBy({
+          code: In(dto.tasteCodes.map((code) => code)),
+        })
       : [];
 
     const stores = dto.storeCodes?.length
-      ? await this.storeRepo.findBy({ code: In(dto.storeCodes) })
+      ? await this.storeRepo.findBy({
+          code: In(dto.storeCodes.map((code) => code)),
+        })
       : [];
 
     let imageUrl: string | null = null;
 
     if (file) {
-      const Bucket = process.env.AWS_S3_BUCKET_NAME;
-      const prefix = process.env.AWS_S3_PREFIX ?? 'snack/';
+      const Bucket = process.env.S3_BUCKET;
+      const prefix = process.env.S3_PREFIX ?? 'snack/';
       const ext = file.originalname.split('.').pop() || 'bin';
       const Key = `${prefix}${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
 
@@ -62,21 +66,29 @@ export class SnackService {
       );
       imageUrl = `https://${Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${Key}`;
     }
+
     const entity = this.snackRepo.create({
+      snackType,
       name: dto.name,
       price: dto.price,
       kcal: dto.kcal,
       capacity: dto.capacity,
       releaseAt: dto.releaseAt,
-      snackImg: imageUrl ?? null,
-      snackType,
+      snackImg: imageUrl ?? undefined,
       brand,
       tastes,
       stores,
     });
 
     await this.snackRepo.save(entity);
-    return { ...dto, snackTypeCode: snackType.code, snackImg: imageUrl };
+    return {
+      ...entity,
+      tasteCodes: tastes.map((taste) => taste.code),
+      storeCodes: stores.map((store) => store.code),
+      brandCode: brand.code,
+      snackTypeCode: snackType.code,
+      snackImg: imageUrl,
+    };
   }
 
   async findAll(paginationDTO: PaginationDTO): Promise<GetSnackResponseDto[]> {
