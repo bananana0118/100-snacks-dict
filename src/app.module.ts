@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import dbConfig from './config/db.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnackModule } from './snack/snack.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SnackModule } from './snack/snack.module';
       useFactory: process.env.NODE_ENV === 'production' ? dbConfig : dbConfig,
     }),
     SnackModule,
+    StorageModule,
   ],
 
   controllers: [AppController],
