@@ -3,11 +3,15 @@
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
-    "emitDecoratorMetadata": true,
+    //metadata
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+   "allowSyntheticDefaultImports": true,
     "target": "ES2023",
     "sourceMap": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
@@ -17,5 +21,6 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "include": ["src/**/*.ts"] 
 }

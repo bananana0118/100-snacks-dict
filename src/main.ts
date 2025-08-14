@@ -1,6 +1,6 @@
+import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import 'reflect-metadata';
 import 'dotenv/config';
 import { ValidationPipe } from '@nestjs/common';
 import { TransformInterceptor } from './utils/transform.interceptroe';
