@@ -1,12 +1,12 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 export class StorageService {
-  private s3 = new S3Client({ region: process.env.AWS_REGION });
+  private s3 = new S3Client({ region: process.env.SERVER_AWS_REGION });
 
   async getPresignedPutUrl(
     fileName: string,
     fileType: string,
-  ): Promise<string> {
+  ): Promise<{ url: string; key: string; expiresIn: number }> {
     const safe = fileName.replace(/[^\w.-]/g, '_');
 
     // (선택) MIME 화이트리스트
@@ -32,6 +32,6 @@ export class StorageService {
     const url = await getSignedUrl(this.s3, cmd, {
       expiresIn: 300, //300초
     });
-    return url;
+    return { url, key, expiresIn: 300 };
   }
 }
