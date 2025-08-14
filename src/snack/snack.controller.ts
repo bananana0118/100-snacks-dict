@@ -5,23 +5,24 @@ import {
   Delete,
   Get,
   HttpCode,
+  Inject,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CreateSnackDto } from './dto/createSnack.dto';
 import { SnackService } from './snack.service';
 import { PaginationDTO } from './dto/pagination.dto';
 import { UpdateSnackDto } from './dto/updateSnackDto';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('snack')
 export class SnackController {
-  constructor(private readonly snackService: SnackService) {}
+  constructor(
+    @Inject(SnackService)
+    private readonly snackService: SnackService,
+  ) {}
 
   @Get()
   @HttpCode(200)
@@ -36,29 +37,14 @@ export class SnackController {
 
   //과자 데이터 생성
   @Post()
-  @UseInterceptors(FileInterceptor('snackImg'))
-  async create(
-    @UploadedFile() snackImg: Express.Multer.File,
-    @Body() createSnackDto: CreateSnackDto,
-  ) {
-    console.log('===== 요청 들어옴 =====');
-    console.log('BODY:', createSnackDto);
-    console.log(
-      'FILE:',
-      snackImg?.originalname,
-      snackImg?.mimetype,
-      snackImg?.size,
-    );
-
+  // @UseInterceptors(FileInterceptor('snackImg'))
+  async create(@Body() createSnackDto: CreateSnackDto) {
     // 파일 필수라면 여기서 검사 (DTO가 아니라 컨트롤러에서!)
-    if (!snackImg) {
+    if (!createSnackDto.snackImg) {
       throw new BadRequestException('이미지 파일(snackImg)은 필수입니다.');
     }
-    if (!/^image\//.test(snackImg.mimetype)) {
-      throw new BadRequestException('이미지 파일만 업로드 가능합니다.');
-    }
 
-    return await this.snackService.create(createSnackDto, snackImg);
+    return await this.snackService.create(createSnackDto);
   }
 
   //과자 수정

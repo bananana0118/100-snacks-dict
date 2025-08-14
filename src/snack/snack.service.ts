@@ -10,7 +10,6 @@ import {
   CreateSnackResponseDto,
   GetSnackResponseDto,
 } from './dto/response/snackResponse.dto';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Brand } from 'src/entities/brand.entity';
 import { SnackType } from 'src/entities/snack-type.entity';
 import { Store } from 'src/entities/store.entity';
@@ -18,20 +17,24 @@ import { Taste } from 'src/entities/taste.entity';
 
 @Injectable()
 export class SnackService {
-  private readonly s3 = new S3Client({ region: process.env.AWS_REGION });
-
   constructor(
     @InjectRepository(Snack) private snackRepo: Repository<Snack>,
-    @InjectRepository(SnackType) private snackTypeRepo: Repository<SnackType>,
+    @InjectRepository(SnackType)
+    private snackTypeRepo: Repository<SnackType>,
     @InjectRepository(Brand) private brandRepo: Repository<Brand>,
     @InjectRepository(Taste) private tasteRepo: Repository<Taste>,
     @InjectRepository(Store) private storeRepo: Repository<Store>,
-  ) {}
+  ) {
+    console.log('[DI]', {
+      snackRepo: !!this.snackRepo,
+      snackTypeRepo: !!this.snackTypeRepo,
+      brandRepo: !!this.brandRepo,
+      tasteRepo: !!this.tasteRepo,
+      storeRepo: !!this.storeRepo,
+    });
+  }
 
-  async create(
-    dto: CreateSnackDto,
-    file?: Express.Multer.File,
-  ): Promise<CreateSnackResponseDto> {
+  async create(dto: CreateSnackDto): Promise<CreateSnackResponseDto> {
     const snackType = await this.snackTypeRepo.findOneByOrFail({
       code: dto.snackTypeCode,
     });
@@ -48,25 +51,6 @@ export class SnackService {
         })
       : [];
 
-    let imageUrl: string | null = null;
-
-    if (file) {
-      const Bucket = process.env.S3_BUCKET;
-      const prefix = process.env.S3_PREFIX ?? 'snack/';
-      const ext = file.originalname.split('.').pop() || 'bin';
-      const Key = `${prefix}${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-
-      await this.s3.send(
-        new PutObjectCommand({
-          Bucket,
-          Key,
-          Body: file.buffer,
-          ContentType: file.mimetype,
-        }),
-      );
-      imageUrl = `https://${Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${Key}`;
-    }
-
     const entity = this.snackRepo.create({
       snackType,
       name: dto.name,
@@ -74,7 +58,7 @@ export class SnackService {
       kcal: dto.kcal,
       capacity: dto.capacity,
       releaseAt: dto.releaseAt,
-      snackImg: imageUrl ?? undefined,
+      snackImg: dto.snackImg, // 이미지 URL은 클라이언트에서 제공
       brand,
       tastes,
       stores,
@@ -87,7 +71,6 @@ export class SnackService {
       storeCodes: stores.map((store) => store.code),
       brandCode: brand.code,
       snackTypeCode: snackType.code,
-      snackImg: imageUrl,
     };
   }
 
