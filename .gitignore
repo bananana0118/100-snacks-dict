@@ -3,7 +3,7 @@
 /node_modules
 /build
 .serverless
-
+*.yml
 # Logs
 logs
 *.log
