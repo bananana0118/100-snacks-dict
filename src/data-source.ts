@@ -6,7 +6,6 @@ import { DataSource } from 'typeorm';
 export default new DataSource({
   type: 'postgres',
   url: process.env.URL, // DATABASE_URL 같은 env
-  port: +(process.env.PORT || 5432),
   entities: [path.resolve(__dirname, 'entities/*{.ts,.js}')],
   migrations: [path.resolve(__dirname, 'migrations/*{.ts,.js}')],
   synchronize: true, // dev에서만 true, prod에선 false
