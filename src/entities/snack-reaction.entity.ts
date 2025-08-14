@@ -13,25 +13,25 @@ import { User } from './user.entity';
 //1: Like
 //2: disLike
 
-@Entity()
+@Entity({ name: 'snack_reaction', synchronize: true })
 export class SnackReaction {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
   @ManyToOne(() => User, (user) => user.snackReactions, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToOne(() => Snack, (snack) => snack.snackReaction, {
+  @ManyToOne(() => Snack, (snack) => snack.snackReactions, {
     onDelete: 'CASCADE',
   })
   snack: Snack;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, type: 'smallint' })
   type: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
   deletedAt?: Date;
 }

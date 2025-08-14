@@ -1,15 +1,22 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Snack } from './snack.entity';
 
-@Entity()
+@Entity({ name: 'snack_type', synchronize: true })
 export class SnackType {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
-  @Column({ unique: true })
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 64 })
   code: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100 })
   name: string;
 
   @OneToMany(() => Snack, (snack) => snack.snackType)

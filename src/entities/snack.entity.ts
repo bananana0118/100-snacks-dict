@@ -17,43 +17,57 @@ import { SnackType } from './snack-type.entity';
 import { Store } from './store.entity';
 import { IsOptional } from 'class-validator';
 
-@Entity()
+@Entity({ name: 'snack', synchronize: true })
 export class Snack {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100 })
   name: string;
 
-  @ManyToOne(() => SnackType, (snackType) => snackType.snacks)
+  @ManyToOne(() => SnackType, (snackType) => snackType.snacks, {
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn()
   snackType: SnackType;
 
-  @Column()
+  @Column({ type: 'int' })
   price: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255, nullable: true })
   @IsOptional()
   snackImg: string; // 이미지 파일이 없을 수도 있으므로 null 허용
 
-  @Column()
+  @Column({ type: 'int' })
   kcal: number;
 
-  @Column()
+  @Column({ type: 'int' })
   capacity: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'date', nullable: true })
   releaseAt: Date;
 
-  @ManyToMany(() => Taste, (taste) => taste.snacks, { eager: true })
+  @ManyToMany(() => Taste, (taste) => taste.snacks, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   @JoinTable({
     name: 'snack_tastes',
-    joinColumn: { name: 'snack_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'taste_id', referencedColumnName: 'id' },
+    joinColumn: {
+      name: 'snack_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'taste_id',
+      referencedColumnName: 'id',
+    },
   })
   tastes: Taste[];
 
-  @ManyToMany(() => Store, (store) => store.snacks, { eager: true })
+  @ManyToMany(() => Store, (store) => store.snacks, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   @JoinTable({
     name: 'snack_stores',
     joinColumn: { name: 'snack_id', referencedColumnName: 'id' },
@@ -61,16 +75,16 @@ export class Snack {
   })
   stores: Store[];
 
-  @OneToMany(() => SnackReaction, (snackReaction) => snackReaction.snack)
-  snackReaction: SnackReaction[];
+  @OneToMany(() => SnackReaction, (snackReactions) => snackReactions.snack)
+  snackReactions: SnackReaction[];
 
-  @ManyToOne(() => Brand, (brand) => brand.snacks)
+  @ManyToOne(() => Brand, (brand) => brand.snacks, { onDelete: 'RESTRICT' })
   @JoinColumn()
   brand: Brand;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
   deletedAt?: Date;
 }

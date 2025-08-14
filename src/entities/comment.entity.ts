@@ -10,28 +10,28 @@ import {
 import { User } from './user.entity';
 import { Snack } from './snack.entity';
 
-@Entity()
+@Entity({ name: 'comment', synchronize: true })
 export class Comment {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
-  @Column()
+  @Column({ type: 'text' })
   body: string;
 
-  @Column()
+  @Column({ type: 'smallint' })
   rating: number;
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.comments, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Snack)
+  @ManyToOne(() => Snack, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'snack_id' })
   snack: Snack;
 
   @CreateDateColumn()
   createdAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
   deletedAt?: Date;
 }
