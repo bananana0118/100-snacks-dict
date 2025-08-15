@@ -13,7 +13,7 @@ import { Comment } from 'src/entities/comment.entity';
 export default registerAs(
   'dbconfig',
   (): PostgresConnectionOptions => ({
-    url: process.env.URL,
+    url: process.env.DATABASE_URL,
     type: 'postgres',
     entities: [
       Snack,
